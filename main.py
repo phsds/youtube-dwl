@@ -85,7 +85,11 @@ class YouTubeDownloaderApp(tk.Tk):
                 self.url_text.insert(tk.END, content)
             self.log("URLs loaded from url.txt")
         else:
-            messagebox.showerror("Error", "url.txt not found.")
+            messagebox.showerror("Error", "url.txt not found, creating it now.")
+            with open("url.txt", "w") as file:
+                file.write("")
+            self.log("url.txt created.")
+
 
     def clean_link_youtube(self, url: str) -> str:
         standart = r'(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})'
