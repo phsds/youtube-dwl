@@ -34,7 +34,13 @@ class YouTubeDownloaderApp(tk.Tk):
         main_frame.pack(fill=tk.BOTH, expand=True)
 
         # Title
-        title_label = ttk.Label(main_frame, text="YouTube_DwL", font=("Helvetica", 16, "bold"))
+        try:
+            self.logo_image = PhotoImage(file="Logo.png")
+            # Reduces the image size. The value 6 divides the original size (the higher the number, the smaller the image)
+            self.logo_image = self.logo_image.subsample(7, 7)
+            title_label = ttk.Label(main_frame, image=self.logo_image)
+        except Exception:
+            title_label = ttk.Label(main_frame, text="YouTube_DwL", font=("Helvetica", 16, "bold"))
         title_label.pack(pady=(0, 10))
 
         # Input Section
