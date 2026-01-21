@@ -93,7 +93,6 @@ class YouTubeDownloaderApp(tk.Tk):
                 file.write("")
             self.log("url.txt created.")
 
-
     def clean_link_youtube(self, url: str) -> str:
         standart = r'(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})'
         match = re.search(standart, url)
