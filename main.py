@@ -5,6 +5,7 @@ import tkinter as tk
 from tkinter import ttk, scrolledtext, messagebox, PhotoImage
 from moviepy import VideoFileClip
 from pytube import YouTube
+from PIL import Image, ImageTk
 
 #command for conversion to executable with pyinstaller:
 #pyinstaller --onefile --noconsole --icon=Logo.ico main.py
@@ -35,9 +36,11 @@ class YouTubeDownloaderApp(tk.Tk):
 
         # Title
         try:
-            self.logo_image = PhotoImage(file="Logo.png")
-            # Reduces the image size. The value 6 divides the original size (the higher the number, the smaller the image)
-            self.logo_image = self.logo_image.subsample(7, 7)
+            # Usa o Pillow para abrir e redimensionar com alta qualidade (LANCZOS)
+            with Image.open("Logo.png") as img:
+                # Calcula o novo tamanho dividindo por 6, assim como no original
+                resized_img = img.resize((img.width // 6, img.height // 6), Image.Resampling.LANCZOS)
+                self.logo_image = ImageTk.PhotoImage(resized_img)
             title_label = ttk.Label(main_frame, image=self.logo_image)
         except Exception:
             title_label = ttk.Label(main_frame, text="YouTube_DwL", font=("Helvetica", 16, "bold"))
