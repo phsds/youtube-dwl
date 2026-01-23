@@ -74,4 +74,4 @@ Whether you run the Python script or the executable, the necessary directories w
 
 ## Future Implementation
 
-Video resolution selection will be implemented in the future
+Video resolution selection will be implemented in the future.
