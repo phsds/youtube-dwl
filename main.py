@@ -1,4 +1,5 @@
 import os
+import sys
 import re
 import threading
 import tkinter as tk
@@ -8,7 +9,7 @@ from pytube import YouTube
 from PIL import Image, ImageTk
 
 #command for conversion to executable with pyinstaller:
-#pyinstaller --onefile --noconsole --icon=Logo.ico main.py
+#pyinstaller --onefile --windowed --icon=Logo.ico --copy-metadata=imageio --add-data "Logo.png;." main.py
 
 class YouTubeDownloaderApp(tk.Tk):
     def __init__(self):
@@ -37,8 +38,14 @@ class YouTubeDownloaderApp(tk.Tk):
 
         # Title
         try:
+            # Determine path to logo (handles PyInstaller temp folder)
+            if hasattr(sys, "_MEIPASS"):
+                logo_path = os.path.join(sys._MEIPASS, "Logo.png")
+            else:
+                logo_path = "Logo.png"
+
             # Use Pillow to open and resize with high quality (LANCZOS)
-            with Image.open("Logo.png") as img:
+            with Image.open(logo_path) as img:
                 # Calculate new size dividing by 6, same as original logic
                 resized_img = img.resize((img.width // 6, img.height // 6), Image.Resampling.LANCZOS)
                 self.logo_image = ImageTk.PhotoImage(resized_img)
