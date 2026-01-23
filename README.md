@@ -1,13 +1,13 @@
 # YouTube_Dwl
 
-A simple Python script to download YouTube videos from a list of URLs and optionally convert them to MP3 format.
+A Python application to download YouTube videos from a list of URLs and optionally convert them to MP3 format using a Graphical User Interface (GUI).
 
 ## Features
 
-- **Bulk Download**: Downloads multiple YouTube videos listed in a text file.
+- **Bulk Download**: Downloads multiple YouTube videos listed in the application or loaded from a text file.
 - **Link Cleaning**: Automatically standardizes different YouTube URL formats to ensure compatibility.
 - **MP3 Conversion**: Converts downloaded videos (MP4 format) to MP3 audio files.
-- **Simple Interface**: Command-line execution with basic user interaction.
+- **Simple Interface**: User-friendly Graphical User Interface (GUI).
 
 ## Prerequisites
 
@@ -22,40 +22,47 @@ Before running the script, make sure you have the following prerequisites instal
   ```bash
    pip install moviepy  # Library for converting to MP3
    ```
+- **Pillow**:
+  ```bash
+   pip install Pillow  # Library for image processing
+   ```
 - **requirements.txt**: For other required libraries, see the `requirements.txt` file.
 
 ## How to Use
 
-1. **Create the `url.txt` file**: In the same directory as `main.py`, create a file named `url.txt`.
-
-2. **Add the URLs**: Add one YouTube video link per line in this file. For example:
-   ```txt
-   https://www.youtube.com/watch?v=[VIDEO_ID]
-   https://youtu.be/[VIDEO_ID]
-   ```
-
-3. **Run the script**: Open your terminal, navigate to the project directory, and run the following command:
+1. **Run the script**: Open your terminal, navigate to the project directory, and run the following command:
    ```bash
    python main.py
    ```
 
-4. **Download Process**: The script will display a stylized title and start downloading the videos from `url.txt`. The videos will be saved in a new folder called `videos`.
+2. **Add URLs**:
+   - **Paste** video URLs directly into the text area (one per line).
+   - **OR** Click **"Load from url.txt"** to load URLs from a `url.txt` file in the same directory.
 
-5. **MP3 Conversion**: After the downloads are finished, the script will ask if you want to convert the videos to MP3.
-   ```
-   Do you want to convert all videos to MP3? (y/n):
-   ```
-   - Type `y` and press `Enter` to start the conversion.
-   - The MP3 files will be saved in a `videos/mp3/` subfolder.
-   - Type `n` to cancel the operation and exit the script.
+3. **MP3 Conversion**: Check the **"Convert to MP3"** box if you wish to convert the videos to audio.
+
+4. **Start Download**: Click on **"Start Download"** to begin the process.
+   - The status log will show the progress.
+   - Videos are saved in the `videos` folder.
+   - MP3s are saved in `videos/mp3`.
+
+## Using the Executable (Windows)
+
+The standalone executable version simplifies usage by not requiring Python or any dependency installation.
+
+1.  **Run the Application**: Place the `main.exe` file in any folder and double-click it to run.
+2.  **Functionality**: The application window will open, and all features work as described above.
+    - You can paste URLs directly into the text area.
+    - If you click **"Load from url.txt"**, the `url.txt` file will be created in the same folder as the `.exe`. You can then edit this file and load the URLs from it.
+3.  **Output Folders**: The downloaded files will be saved in the `videos` and `videos/mp3` subfolders, which will be created inside the same directory where `main.exe` is located.
 
 ## File Structure
 
-The script will create the `videos` and `mp3` directories, resulting in the following structure:
+Whether you run the Python script or the executable, the necessary directories will be created, resulting in a structure like this:
 
 ```
 .
-├── main.py
+├── main.py or YouTube_Dwl.exe
 ├── url.txt
 └── videos/
     ├── video1.mp4
