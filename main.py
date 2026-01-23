@@ -14,7 +14,7 @@ class YouTubeDownloaderApp(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("YouTube Downloader & Converter")
-        self.geometry("700x600")
+        self.geometry("720x720")
         
         # Apply a theme
         style = ttk.Style(self)
@@ -24,6 +24,7 @@ class YouTubeDownloaderApp(tk.Tk):
         self.ensure_directories()
 
     def ensure_directories(self):
+        # Create necessary directories for videos and mp3s if they don't exist
         if not os.path.exists("videos"):
             os.makedirs("videos")
         if not os.path.exists(os.path.join("videos", "mp3")):
@@ -36,18 +37,27 @@ class YouTubeDownloaderApp(tk.Tk):
 
         # Title
         try:
-            # Usa o Pillow para abrir e redimensionar com alta qualidade (LANCZOS)
+            # Use Pillow to open and resize with high quality (LANCZOS)
             with Image.open("Logo.png") as img:
-                # Calcula o novo tamanho dividindo por 6, assim como no original
+                # Calculate new size dividing by 6, same as original logic
                 resized_img = img.resize((img.width // 6, img.height // 6), Image.Resampling.LANCZOS)
                 self.logo_image = ImageTk.PhotoImage(resized_img)
             title_label = ttk.Label(main_frame, image=self.logo_image)
         except Exception:
+            # Fallback text if logo image is missing or fails to load
             title_label = ttk.Label(main_frame, text="YouTube_DwL", font=("Helvetica", 16, "bold"))
         title_label.pack(pady=(0, 10))
 
         # Input Section
-        input_frame = ttk.LabelFrame(main_frame, text="Video URLs (one per line)", padding="5")
+        input_frame = ttk.LabelFrame(main_frame, text="""USAGE INSTRUCTIONS:
+                                     
+1. PASTE video URLs below (one per line).
+OR
+1. CLICK on 'Load from url.txt' to create the file for MANUAL INSERTION - (the file will be created in the same folder as the program).
+2. Check 'Convert to MP3' to convert videos to MP3/AUDIO if desired.
+3. Click on 'Start Download' to START the process.
+4. Go to 'videos' folder to access downloaded videos and 'mp3' for audio.
+""", padding="5")
         input_frame.pack(fill=tk.BOTH, expand=True, pady=5)
 
         self.url_text = scrolledtext.ScrolledText(input_frame, height=10, font=("Consolas", 10))
@@ -71,16 +81,18 @@ class YouTubeDownloaderApp(tk.Tk):
         log_frame = ttk.LabelFrame(main_frame, text="Status Log", padding="5")
         log_frame.pack(fill=tk.BOTH, expand=True, pady=5)
 
-        self.log_text = scrolledtext.ScrolledText(log_frame, height=8, state='disabled', font=("Consolas", 9))
+        self.log_text = scrolledtext.ScrolledText(log_frame, height=15, state='disabled', font=("Consolas", 9))
         self.log_text.pack(fill=tk.BOTH, expand=True)
 
     def log(self, message):
+        # Helper method to log messages to the GUI log window
         self.log_text.config(state='normal')
         self.log_text.insert(tk.END, f"{message}\n")
         self.log_text.see(tk.END)
         self.log_text.config(state='disabled')
 
     def load_from_file(self):
+        # Load URLs from url.txt file into the text area
         if os.path.exists("url.txt"):
             with open("url.txt", "r") as file:
                 content = file.read()
@@ -88,12 +100,14 @@ class YouTubeDownloaderApp(tk.Tk):
                 self.url_text.insert(tk.END, content)
             self.log("URLs loaded from url.txt")
         else:
+            # Create the file if it doesn't exist
             messagebox.showerror("Error", "url.txt not found, creating it now.")
             with open("url.txt", "w") as file:
                 file.write("")
             self.log("url.txt created.")
 
     def clean_link_youtube(self, url: str) -> str:
+        # Normalize YouTube URLs to standard format
         standart = r'(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})'
         match = re.search(standart, url)
         if match:
@@ -102,6 +116,7 @@ class YouTubeDownloaderApp(tk.Tk):
         return url
 
     def convert_video_to_mp3(self, video_path: str):
+        # Convert downloaded video to MP3 format
         self.log(f"Converting to MP3: {os.path.basename(video_path)}...")
         try:
             clip = VideoFileClip(video_path)
@@ -118,6 +133,7 @@ class YouTubeDownloaderApp(tk.Tk):
             self.log(f"Conversion error: {e}")
 
     def start_download_thread(self):
+        # Start the download process in a separate thread to keep UI responsive
         urls = self.url_text.get("1.0", tk.END).strip().split('\n')
         urls = [u.strip() for u in urls if u.strip()]
         
@@ -129,12 +145,14 @@ class YouTubeDownloaderApp(tk.Tk):
         threading.Thread(target=self.process_videos, args=(urls,), daemon=True).start()
 
     def process_videos(self, urls):
+        # Main logic to download videos and optionally convert them
         self.log("Starting download process...")
         for url in urls:
             clean_url = self.clean_link_youtube(url)
             self.log(f"Processing: {clean_url}")
             try:
                 yt = YouTube(clean_url)
+                # Select the highest resolution progressive stream (mp4)
                 stream = yt.streams.filter(progressive=True, file_extension='mp4').order_by('resolution').desc().first()
                 if stream:
                     self.log(f"Downloading: {stream.default_filename}...")
