@@ -71,3 +71,7 @@ Whether you run the Python script or the executable, the necessary directories w
         ├── video1.mp3
         └── video2.mp3
 ```
+
+## Future Implementation
+
+Video resolution selection will be implemented in the future
