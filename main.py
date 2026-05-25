@@ -5,7 +5,7 @@ import threading
 import tkinter as tk
 from tkinter import ttk, scrolledtext, messagebox
 from moviepy import VideoFileClip
-from pytube import YouTube
+from pytubefix import YouTube
 from PIL import Image, ImageTk
 
 # pyinstaller --onefile --windowed --icon=Logo.ico --copy-metadata=imageio --add-data "Logo.png;." main.py
