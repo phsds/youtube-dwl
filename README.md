@@ -14,9 +14,9 @@ A Python application to download YouTube videos from a list of URLs and optional
 Before running the script, make sure you have the following prerequisites installed:
 
 - **Python 3.x**
-- **pytube**: 
+- **pytubefix**: 
   ```bash
-   pip install pytube  # Library for downloading YouTube videos
+   pip install pytubefix  # Library for downloading YouTube videos
    ```
 - **moviepy**: 
   ```bash
