@@ -3,7 +3,7 @@ import sys
 import re
 import threading
 import tkinter as tk
-from tkinter import ttk, scrolledtext, messagebox
+from tkinter import filedialog, ttk, scrolledtext, messagebox
 from moviepy import VideoFileClip
 from pytubefix import YouTube
 from PIL import Image, ImageTk
@@ -29,9 +29,10 @@ class YouTubeDownloaderApp(tk.Tk):
 
     def __init__(self):
         super().__init__()
-        self.title("YouTube Downloader & Converter")
+        self.title("YouTube_Dwl v1.2")
         self.geometry("940x800")
         self.configure(bg=self.BG)
+        self.download_path = os.path.abspath("videos")
         self.center_window()
         self.setup_styles()
         self.create_widgets()
@@ -120,8 +121,8 @@ class YouTubeDownloaderApp(tk.Tk):
     # ── Directory setup ─────────────────────────────────────────────
 
     def ensure_directories(self):
-        os.makedirs("videos", exist_ok=True)
-        os.makedirs(os.path.join("videos", "mp3"), exist_ok=True)
+        os.makedirs(self.download_path, exist_ok=True)
+        os.makedirs(os.path.join(self.download_path, "mp3"), exist_ok=True)
 
     # ── Widget tree ─────────────────────────────────────────────────
 
@@ -169,9 +170,25 @@ class YouTubeDownloaderApp(tk.Tk):
             padx=10, pady=10)
         self.url_text.pack(fill=tk.BOTH, expand=True)
 
+        # Folder selection row
+        folder_row = ttk.Frame(input_card, style="Card.TFrame")
+        folder_row.pack(fill=tk.X, pady=(0, 10))
+
+        ttk.Label(folder_row, text="Download to:",
+                  style="CardLabel.TLabel").pack(side=tk.LEFT)
+
+        self.path_label = ttk.Label(folder_row,
+                                    text=self._shorten_path(self.download_path),
+                                    style="CardLabel.TLabel")
+        self.path_label.pack(side=tk.LEFT, padx=(6, 0), fill=tk.X, expand=True)
+
+        self.browse_btn = ttk.Button(folder_row, text="Browse...",
+                                     command=self.browse_folder)
+        self.browse_btn.pack(side=tk.RIGHT)
+
         # Bottom row: queue counter + download button
         bottom_row = ttk.Frame(input_card, style="Card.TFrame")
-        bottom_row.pack(fill=tk.X, pady=(10, 0))
+        bottom_row.pack(fill=tk.X, pady=(0, 0))
 
         self.queue_label = ttk.Label(bottom_row, style="CardLabel.TLabel")
         self.update_queue_count(0)
@@ -255,7 +272,7 @@ class YouTubeDownloaderApp(tk.Tk):
 
         block = ttk.Frame(parent, style="Header.TFrame")
         block.pack(side=tk.LEFT, fill=tk.X, expand=True)
-        ttk.Label(block, text="YouTube Downloader & Converter",
+        ttk.Label(block, text="YouTube_Dwl - YouTube Downloader & Converter",
                   style="HeaderTitle.TLabel").pack(anchor=tk.W)
         ttk.Label(block, text="Download videos and convert to MP3",
                   style="HeaderSubtitle.TLabel").pack(anchor=tk.W)
@@ -292,6 +309,21 @@ class YouTubeDownloaderApp(tk.Tk):
 
     def update_queue_count(self, count):
         self.queue_label.config(text=f"Queue: {count} video{'s' if count != 1 else ''}")
+
+    def _shorten_path(self, path: str, max_len: int = 55) -> str:
+        if len(path) <= max_len:
+            return path
+        half = (max_len - 3) // 2
+        return path[:half] + "..." + path[-half:]
+
+    def browse_folder(self):
+        folder = filedialog.askdirectory(
+            title="Select download folder",
+            initialdir=self.download_path)
+        if folder:
+            self.download_path = os.path.abspath(folder)
+            self.path_label.config(text=self._shorten_path(self.download_path))
+            self.ensure_directories()
 
     # ── File / URL utilities ────────────────────────────────────────
 
