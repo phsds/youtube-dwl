@@ -358,7 +358,7 @@ class YouTubeDownloaderApp(tk.Tk):
         try:
             clip = VideoFileClip(video_path)
             name, _ = os.path.splitext(os.path.basename(video_path))
-            mp3_dir = os.path.join("videos", "mp3")
+            mp3_dir = os.path.join(self.download_path, "mp3")
             mp3_path = os.path.join(mp3_dir, f"{name}.mp3")
             clip.audio.write_audiofile(mp3_path, logger=None)
             clip.close()
@@ -404,7 +404,7 @@ class YouTubeDownloaderApp(tk.Tk):
                 if stream:
                     self.log(f"Downloading: {stream.default_filename}",
                              "accent")
-                    file_path = stream.download(output_path="videos")
+                    file_path = stream.download(output_path=self.download_path)
                     self.log("Download complete.", "success")
 
                     if self.convert_var.get():
